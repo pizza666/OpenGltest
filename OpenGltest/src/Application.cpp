@@ -5,6 +5,26 @@
 #include <string>
 #include <sstream>
 
+#define ASSERT(x) if (!(x)) __debugbreak();
+#define GLCall(x) GLClearError();\
+    x;\
+    ASSERT(GLLogCall(#x,__FILE__,__LINE__))
+
+static void GLClearError() 
+{
+    while (glGetError() != GL_NO_ERROR);
+}
+
+static bool GLLogCall(const char* function, const char* file, int line)
+{
+    while (GLenum error = glGetError())
+    {
+        std::cout << "[OpenGL Error] (" << error << ")" << function << " " << file << ": " << line << std::endl;;
+        return false;
+    }
+    return true;
+}
+
 struct ShaderProgramSource
 {
     std::string VertexSource;
@@ -108,6 +128,7 @@ int main(void)
 
     /* Make the window's context current */
     glfwMakeContextCurrent(window);
+    glfwSwapInterval(1);
 
     if (glewInit() != GLEW_OK)
         std::cout << "Error initializing GLEW" << std::endl;
@@ -152,15 +173,35 @@ int main(void)
   
     glUseProgram(shader);
 
+    int location = glGetUniformLocation(shader, "u_Color");
+
+
     /* Loop until the user closes the window */
     
+    float red, green, blue, alpha;
+    red = 0.0f;
+    green = 0.0f;
+    blue = 0.5f;
+    alpha = 1.0f;
+    float inc = 0.01f;
     while (!glfwWindowShouldClose(window))
     {
+
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
 
+
+
+        glUniform4f(location, red, green, blue, alpha);
+        GLCall(glDrawElements(GL_TRIANGLES, sizeof(indices), GL_UNSIGNED_INT, nullptr));
+
         //glDrawArrays(GL_TRIANGLES, 0, 6);
-        glDrawElements(GL_TRIANGLES, sizeof(indices), GL_UNSIGNED_INT, nullptr);
+        if (red > 1.0f) 
+            inc = -0.01f;
+        else if (red < 0.0f) 
+            inc = 0.01f;
+
+        red += inc;
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
