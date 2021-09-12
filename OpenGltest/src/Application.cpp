@@ -4,27 +4,10 @@
 #include <fstream>
 #include <string>
 #include <sstream>
-
-
-#define ASSERT(x) if (!(x)) __debugbreak();
-#define GLCall(x) GLClearError();\
-    x;\
-    ASSERT(GLLogCall(#x,__FILE__,__LINE__))
-
-static void GLClearError() 
-{
-    while (glGetError() != GL_NO_ERROR);
-}
-
-static bool GLLogCall(const char* function, const char* file, int line)
-{
-    while (GLenum error = glGetError())
-    {
-        std::cout << "[OpenGL Error] (" << error << ")" << function << " " << file << ": " << line << std::endl;;
-        return false;
-    }
-    return true;
-}
+#include "Renderer.h"
+#include "VertexBuffer.h"
+#include "VertexArray.h"
+#include "IndexBuffer.h"
 
 struct ShaderProgramSource
 {
@@ -149,25 +132,13 @@ int main(void)
     };
 
     // generate vertex buffer
-    unsigned int buffer;
-    glGenBuffers(1, &buffer);
-    glBindBuffer(GL_ARRAY_BUFFER, buffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertex), vertex, GL_STATIC_DRAW);
+    VertexArray *va = new VertexArray;
+    VertexBuffer *vb = new VertexBuffer(vertex, sizeof(vertex));
+    VertextBufferLayout *layout = new VertextBufferLayout;
+    layout->Push<float>(2);
+    va->AddBuffer(*vb, *layout);
 
-    // generate vertex array object
-    unsigned int vao;
-    GLCall(glGenVertexArrays(1, &vao));
-    GLCall(glBindVertexArray(vao));
-
-    // glue them though attrib pointrs
-    GLCall(glEnableVertexAttribArray(0));
-    GLCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0));
-
-    // generate index buffer object
-    unsigned int ibo;
-    glGenBuffers(1, &ibo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    IndexBuffer *ib = new IndexBuffer(indices, 6);
 
 
     ShaderProgramSource shaderProgramSource = ParseShader("res/shaders/Basic.shader");
@@ -200,12 +171,13 @@ int main(void)
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
 
-        GLCall(glBindVertexArray(vao));
-        GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo));
         GLCall(glUseProgram(shader));
+        GLCall(glUniform4f(location, red, green, blue, alpha));
 
-        glUniform4f(location, red, green, blue, alpha);
-        GLCall(glDrawElements(GL_TRIANGLES, sizeof(indices), GL_UNSIGNED_INT, nullptr));
+        va->Bind();
+        ib->Bind();
+
+        GLCall(glDrawElements(GL_TRIANGLES, 6 , GL_UNSIGNED_INT, nullptr));
 
         // cycle red channel
         if (red > 1.0f) 
