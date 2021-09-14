@@ -1,5 +1,4 @@
 #pragma once
-#include "GLCore.h"
 #include "VertexArray.h"
 #include "IndexBuffer.h"
 #include "Shader.h"

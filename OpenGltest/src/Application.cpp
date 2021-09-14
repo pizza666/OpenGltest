@@ -1,39 +1,41 @@
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
+#include "GLCore.h"
+#include "Window.h"
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <sstream>
 #include "Renderer.h"
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
 
 int main(void)
 {
-    GLFWwindow* window;
+    Window *window = new Window(960, 540, "Hello");
+
+    //GLFWwindow* window;
 
     /* Initialize the library */
-    if (!glfwInit())
-        return -1;
+    //if (!glfwInit())
+    //    return -1;
 
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    // glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    // glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    // glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
+    // window = glfwCreateWindow(960, 540, "Hello World", NULL, NULL);
 
     /* Make the window's context current */
-    glfwMakeContextCurrent(window);
-    glfwSwapInterval(1);
+    // glfwMakeContextCurrent(window);
+    // glfwSwapInterval(1);
+    // glfwSetWindowSizeCallback(window, window_size_callback);
 
-    if (glewInit() != GLEW_OK)
-        std::cout << "Error initializing GLEW" << std::endl;
 
-    std::cout << glGetString(GL_VERSION) << std::endl;
 
     float vertex[] = {
-        -0.5f,-0.5f, 0.0f, 0.0f,
-         0.5f,-0.5f, 1.0f, 0.0f,
-         0.5f, 0.5f, 1.0f, 1.0f,
-        -0.5f, 0.5f, 0.0f, 1.0f
+         100.0f, 100.0f, 0.0f, 0.0f,
+         400.0f, 100.0f, 1.0f, 0.0f, 
+         400.0f, 400.0f, 1.0f, 1.0f,
+         100.0f, 400.0f, 0.0f, 1.0f
     };
 
     unsigned int indices[] = {
@@ -51,8 +53,6 @@ int main(void)
     IndexBuffer *ib = new IndexBuffer(indices, 6);
     Shader *shader = new Shader("res/shaders/Basic.shader");
     Texture* texture = new Texture("res/textures/tex.png");
-
-
     Renderer *renderer = new Renderer();
 
     layout->Push<float>(2);
@@ -65,43 +65,28 @@ int main(void)
     blue = 0.5f;
     alpha = 1.0f;
 
+    glm::mat4 proj = glm::ortho(0.0f, 960.0f, 0.0f, 540.0f, -1.0f, 1.0f);
 
     shader->Bind();
     //shader->SetUniform4f("u_color", red, green, blue, alpha);
+    shader->SetUniformMat4f("u_mvp", proj);
 
     texture->Bind();
     shader->SetUniform1i("u_texture", 0);
 
-    float inc = 0.01f;
-
     // main loop
-    while (!glfwWindowShouldClose(window))
+    while (!window->WindowCloseCallback())
     {
-
         /* Render here */
         renderer->Clear();
         renderer->Draw(*va, *ib, *shader);
-        //shader->SetUniform4f("u_Color", red, green, blue, alpha);
-
-        // cycle red channel
-        /*    if (red > 1.0f) 
-            inc = -0.01f;
-        else if (red < 0.0f) 
-            inc = 0.01f;
-        red += inc;*/
-
-        /* Swap front and back buffers */
-        glfwSwapBuffers(window);
-
-        /* Poll for and process events */
-        glfwPollEvents();
- 
+        window->Run();
     }
 
     delete shader;
     delete va;
     delete ib;
+    //delete window;
 
-    glfwTerminate();
     return 0;
 }

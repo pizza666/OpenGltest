@@ -55,7 +55,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);_WIN64;GLEW_STATIC</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Deps\GLFW\include;$(SolutionDir)Deps\GLEW\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Deps\GLFW\include;$(SolutionDir)Deps\GLEW\include;src\vendor</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -72,7 +72,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);_WIN64;GLEW_STATIC</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Deps\GLFW\include;$(SolutionDir)Deps\GLEW\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Deps\GLFW\include;$(SolutionDir)Deps\GLEW\include;src\vendor</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -93,19 +93,53 @@
     <ClCompile Include="src\VertexArray.cpp" />
     <ClCompile Include="src\VertextBufferLayout.cpp" />
     <ClCompile Include="src\Texture.cpp" />
+    <ClCompile Include="src\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\Basic.shader" />
+    <None Include="src\vendor\glm\readme.md" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\GLCore.h" />
     <ClInclude Include="src\Shader.h" />
     <ClInclude Include="src\Renderer.h" />
+    <ClInclude Include="src\vendor\glm\common.hpp" />
+    <ClInclude Include="src\vendor\glm\exponential.hpp" />
+    <ClInclude Include="src\vendor\glm\ext.hpp" />
+    <ClInclude Include="src\vendor\glm\fwd.hpp" />
+    <ClInclude Include="src\vendor\glm\geometric.hpp" />
+    <ClInclude Include="src\vendor\glm\glm.hpp" />
+    <ClInclude Include="src\vendor\glm\integer.hpp" />
+    <ClInclude Include="src\vendor\glm\mat2x2.hpp" />
+    <ClInclude Include="src\vendor\glm\mat2x3.hpp" />
+    <ClInclude Include="src\vendor\glm\mat2x4.hpp" />
+    <ClInclude Include="src\vendor\glm\mat3x2.hpp" />
+    <ClInclude Include="src\vendor\glm\mat3x3.hpp" />
+    <ClInclude Include="src\vendor\glm\mat3x4.hpp" />
+    <ClInclude Include="src\vendor\glm\mat4x2.hpp" />
+    <ClInclude Include="src\vendor\glm\mat4x3.hpp" />
+    <ClInclude Include="src\vendor\glm\mat4x4.hpp" />
+    <ClInclude Include="src\vendor\glm\matrix.hpp" />
+    <ClInclude Include="src\vendor\glm\packing.hpp" />
+    <ClInclude Include="src\vendor\glm\trigonometric.hpp" />
+    <ClInclude Include="src\vendor\glm\vec2.hpp" />
+    <ClInclude Include="src\vendor\glm\vec3.hpp" />
+    <ClInclude Include="src\vendor\glm\vec4.hpp" />
+    <ClInclude Include="src\vendor\glm\vector_relational.hpp" />
+    <ClInclude Include="src\vendor\stb\stb_image.h" />
     <ClInclude Include="src\VertexBuffer.h" />
     <ClInclude Include="src\IndexBuffer.h" />
     <ClInclude Include="src\VertexArray.h" />
     <ClInclude Include="src\VertextBufferLayout.h" />
     <ClInclude Include="src\Texture.h" />
+    <ClInclude Include="src\Window.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="src\vendor\glm\CMakeLists.txt" />
+    <Text Include="src\vendor\glm\copying.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\textures\tex.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
